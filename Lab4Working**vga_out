@@ -26,8 +26,6 @@ module vga_out(
     output [3:0] pix_b,
     output hsync,
     output vsync
-//    output reg [10:0]curr_x,
-//    output reg [9:0]curr_y
     );
   
   reg [10:0] hcount = 0;
@@ -63,11 +61,6 @@ module vga_out(
     begin
     hcount<=hcount+1;
     end
-//  if((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))
-//    begin
-//    curr_x <= hcount - 383;
-//    curr_y <= vcount - 30;
-//    end
   end
 
     assign hsync=(hcount<152)? 0:1;
@@ -77,7 +70,7 @@ module vga_out(
     assign pix_g=((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))? green:0;
     assign pix_b=((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))? blue:0;
 
-    always @ (posedge clk)
+    always @ *
         begin
         red <=switch[3:0];
         green <=switch[7:4];
