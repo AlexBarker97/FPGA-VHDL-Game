@@ -20,7 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 module vga_out(
     input clk,
-    input [11:0] switch,
     input [3:0] draw_r,
     input [3:0] draw_g,
     input [3:0] draw_b,
@@ -64,17 +63,10 @@ module vga_out(
     assign hsync=(hcount<152)? 0:1;
     assign vsync=(vcount<3)? 1:0;
 
-/*
-    assign pix_r=((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))? red:0;
-    assign pix_g=((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))? green:0;
-    assign pix_b=((383<hcount) & (hcount<1824) & (30<vcount) & (vcount<931))? blue:0;
-*/
-
     always @ *
         begin 
         pix_r <= draw_r;
         pix_g <= draw_g;
         pix_b <= draw_b;
         end
-        
 endmodule
