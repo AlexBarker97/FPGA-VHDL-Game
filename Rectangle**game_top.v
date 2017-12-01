@@ -20,25 +20,67 @@
 //////////////////////////////////////////////////////////////////////////////////
 module game_top(
     input clk,
-    input [11:0] switch,
-    output reg [3:0] pix_r,
-    output reg [3:0] pix_g,
-    output reg [3:0] pix_b,
+    input left,
+    input right,
+    input up,
+    input down,
+    input centre,
+    output [3:0] pix_r,
+    output [3:0] pix_g,
+    output [3:0] pix_b,
     output hsync,
     output vsync,
-    output curr_x,
-    output curr_y
+    input curr_x,
+    input curr_y
     );
-    vga_out vga(.clk(clk), .switch(switch), .pix_r(pix_r), .pix_g(pix_g), .pix_b(pix_b), .hsync(hsync), .vsync(vsync), .curr_x(curr_x), .curr_y(curr_y));
-    wire pixclk;
 
-  clk_wiz_0 instance_name(.clk_out1(pixclk), .clk_in1(clk)); 
+wire clk_out106;
+wire clk_out60;
+wire draw_r;
+wire draw_g;
+wire draw_b;
+reg [20:0] count = 0;
+reg slowclk = 0;
+reg blkpos_x = 0;
+reg blkpos_y = 0;
 
-    always@*
+    vga_out vga(.clk(clk_out106), .draw_r(draw_r), .draw_g(draw_g), .draw_b(draw_b), .pix_r(pix_r), .pix_g(pix_g), .pix_b(pix_b), .hsync(hsync), .vsync(vsync), .curr_x(curr_x), .curr_y(curr_y));
+    drawcon draw(.r(draw_r),.g(draw_g),.b(draw_b),.draw_x(curr_x),.draw_y(curr_y),.blkpos_x(blkpos_x),.blkpos_y(blkpos_y));
+
+always@(posedge clk)
+    begin
+    count <= count + 1;
+    if (count == 1666666)
         begin
-        if ((curr_x > 520) & (curr_x < 920) & (curr_y > 300) & (curr_y < 600))
-            pix_r = switch[3:0];
-            pix_g = switch[7:4];
-            pix_b = switch[11:8];
+        count <= 0;
+        slowclk <= !slowclk;
         end
+    end
+    
+always@(posedge slowclk)
+    begin
+    if (centre)
+        blkpos_x <= 700;
+        blkpos_y <= 450;
+    if (up)
+        blkpos_y <= blkpos_y + 4;
+    if (down)
+        blkpos_y <= blkpos_y - 4;
+    if (left)
+        blkpos_x <= blkpos_x - 4;
+    if (right)
+        blkpos_x <= blkpos_x + 4;
+    if ((blkpos_x<11) | (blkpos_x>1396) | (blkpos_y<11) | (blkpos_y>854))
+        blkpos_x <= 700;
+        blkpos_y <= 450;
+    end
+        
+clk_wiz_0 inst
+(
+// Clock out ports  
+.clk_out1(clk_out106),
+// Clock in ports
+.clk_in1(clk)
+);
+  
 endmodule
