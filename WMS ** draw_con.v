@@ -21,8 +21,10 @@
 
 
 module draw_con(
-    input [10:0]blkpos_x,
-    input [9:0]blkpos_y,
+    input [10:0]characterPos_x,
+    input [9:0]characterPos_y,
+    input [10:0]foodPos_x,
+    input [9:0]foodPos_y,
     input [10:0]draw_x,
     input [9:0]draw_y,
     output reg[3:0]r,
@@ -33,9 +35,13 @@ module draw_con(
     reg [3:0]bg_r = 0;
     reg [3:0]bg_g = 0;
     reg [3:0]bg_b = 0;
-    reg [3:0]blk_r = 0;
-    reg [3:0]blk_g = 0;
-    reg [3:0]blk_b = 0;
+    reg [3:0]cha_r = 0;
+    reg [3:0]cha_g = 0;
+    reg [3:0]cha_b = 0;
+    reg [3:0]food_r = 0;
+    reg [3:0]food_g = 0;
+    reg [3:0]food_b = 0;
+    
     
     always@*
             begin
@@ -54,22 +60,37 @@ module draw_con(
             end
         always@*
             begin
-            if (((blkpos_x<draw_x) & (draw_x<blkpos_x+32)) & ((blkpos_y<draw_y) & (draw_y<blkpos_y+32)))
+            if (((characterPos_x<draw_x) & (draw_x<characterPos_x+32)) & ((characterPos_y<draw_y) & (draw_y<characterPos_y+32)))
                 begin
-                blk_r <= 4'b1111;
-                blk_g <= 4'b0000;
-                blk_b <= 4'b0000;
+                cha_r <= 4'b1111;
+                cha_g <= 4'b0000;
+                cha_b <= 4'b0000;
                 end
             else
                 begin
-                blk_r <= 4'b0000;
-                blk_g <= 4'b0000;
-                blk_b <= 4'b0000;
+                cha_r <= 4'b0000;
+                cha_g <= 4'b0000;
+                cha_b <= 4'b0000;
                 end
             end
         always@*
             begin
-            if (blk_r == 0 && blk_g == 0 && blk_b == 0)
+            if (((foodPos_x<draw_x) & (draw_x<foodPos_x+16)) & ((foodPos_y<draw_y) & (draw_y<foodPos_y+16)))
+                begin
+                food_r <= 4'b1111;
+                food_g <= 4'b1111;
+                food_b <= 4'b0000;
+                end
+            else
+                begin
+                food_r <= 4'b0000;
+                food_g <= 4'b0000;
+                food_b <= 4'b0000;
+                end
+            end
+        always@*
+            begin
+            if (cha_r == 0 && cha_g == 0 && cha_b == 0 && food_r==0 && food_g==0 && food_b==0)
                 begin
                 r <= bg_r;
                 g <= bg_g;
@@ -77,9 +98,18 @@ module draw_con(
                 end
             else
                 begin
-                r <= blk_r;
-                g <= blk_g;
-                b <= blk_b;
+                if(food_r==0 && food_r==0 && food_r==0)
+                    begin
+                    r <= food_r;
+                    g <= food_g;
+                    b <= food_b;
+                    end
+                else
+                    begin
+                    r <= cha_r;
+                    g <= cha_g;
+                    b <= cha_b;
+                    end
                 end
             end
 endmodule
