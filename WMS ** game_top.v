@@ -37,9 +37,12 @@ module game_top(
     
     wire [10:0]curr_x;
     wire [9:0]curr_y;
-    reg [10:0] blkpos_x;
-    reg [9:0] blkpos_y;
+    reg [10:0]characterPos_x=700;
+    reg [9:0] characterPos_y=450;
+    reg [10:0]foodPos_x=50;
+    reg [9:0]foodPos_y=50;
     reg [20:0] count;
+    reg [7:0] characterSize=32;
     wire clk106;
     reg [20:0]slowclk=0;
     wire [3:0] draw_r;
@@ -47,7 +50,7 @@ module game_top(
     wire [3:0] draw_g;
     
     vga_out vga(.vsync(vsync), .hsync(hsync), .clk(clk106), .curr_x(curr_x), .curr_y(curr_y), .pix_r(pix_r), .pix_g(pix_g), .pix_b(pix_b), .draw_r(draw_r), .draw_g(draw_g), .draw_b(draw_b));
-    draw_con draw(.r(draw_r), .g(draw_g), .b(draw_b), .blkpos_x(blkpos_x), .blkpos_y(blkpos_y), .draw_x(curr_x), .draw_y(curr_y));
+    draw_con draw(.r(draw_r), .g(draw_g), .b(draw_b), .characterPos_x(characterPos_x), .characterPos_y(characterPos_y), .foodPos_x(foodPos_x), .foodPos_y(foodPos_y), .characterSize(characterSize), .draw_x(curr_x), .draw_y(curr_y));
     
       clk_wiz_0 instance_name
        (
@@ -70,29 +73,43 @@ module game_top(
              begin
              if(centre)
                 begin
-                blkpos_x <=700;
-                blkpos_y <=450;
+                characterPos_x <=700;
+                characterPos_y <=450;
+                characterSize <=32;
+                foodPos_x<=100;
+                foodPos_y<=100;
                 end
              if(up)
                 begin
-                blkpos_y<= blkpos_y -4;
+                characterPos_y<= characterPos_y -5;
                 end
              if(down)
                 begin
-                blkpos_y<= blkpos_y +4;
+                characterPos_y<= characterPos_y +5;
                 end
             if(left)
                 begin
-                blkpos_x<= blkpos_x -4;
+                characterPos_x<= characterPos_x -5;
                 end
             if(right)
                 begin
-                blkpos_x<= blkpos_x +4;
+                characterPos_x<= characterPos_x +5;
                 end
-            if((blkpos_x<11) | (blkpos_x>1396) | (blkpos_y<11) | (blkpos_y>854))
+            if((characterPos_x<(characterSize/2)+10) | (characterPos_x>(1429-(characterSize/2))) | (characterPos_y<(characterSize/2)+10) | (characterPos_y>(889-(characterSize/2))))
                 begin
-                blkpos_x <=700;
-                blkpos_y <=450;
+                characterPos_x <=700;
+                characterPos_y <=450;
+                characterSize <=32;
+                foodPos_x<=100;
+                                foodPos_y<=100;
                 end
-            end   
+            if((foodPos_x-(8+(characterSize/2))<characterPos_x) && (characterPos_x<foodPos_x+(8+(characterSize/2))) && (foodPos_y-(8+(characterSize/2))<characterPos_y) && (characterPos_y<foodPos_y+(8+(characterSize/2))))
+                begin
+                foodPos_x<=30+$urandom_9;
+                foodPos_y<=30+$urandom_8;
+                characterSize<=characterSize+10;
+                end
+            end 
+        
+        
 endmodule
