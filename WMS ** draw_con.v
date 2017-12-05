@@ -27,6 +27,7 @@ module draw_con(
     input [9:0]foodPos_y,
     input [10:0]draw_x,
     input [9:0]draw_y,
+    input [7:0]characterSize,
     output reg[3:0]r,
     output reg[3:0]g,
     output reg[3:0]b
@@ -60,7 +61,7 @@ module draw_con(
             end
         always@*
             begin
-            if (((characterPos_x<draw_x) & (draw_x<characterPos_x+32)) & ((characterPos_y<draw_y) & (draw_y<characterPos_y+32)))
+            if (((characterPos_x-(characterSize/2)<draw_x) & (draw_x<(characterPos_x+(characterSize/2)))) & ((characterPos_y-(characterSize/2)<draw_y) & (draw_y<(characterPos_y+(characterSize/2)))))
                 begin
                 cha_r <= 4'b1111;
                 cha_g <= 4'b0000;
@@ -75,7 +76,7 @@ module draw_con(
             end
         always@*
             begin
-            if (((foodPos_x<draw_x) & (draw_x<foodPos_x+16)) & ((foodPos_y<draw_y) & (draw_y<foodPos_y+16)))
+            if (((foodPos_x-8<draw_x) & (draw_x<foodPos_x+8)) & ((foodPos_y-8<draw_y) & (draw_y<foodPos_y+8)))
                 begin
                 food_r <= 4'b1111;
                 food_g <= 4'b1111;
@@ -98,7 +99,7 @@ module draw_con(
                 end
             else
                 begin
-                if(food_r==0 && food_r==0 && food_r==0)
+                if(cha_r==0 && cha_g==0 && cha_b==0)
                     begin
                     r <= food_r;
                     g <= food_g;
