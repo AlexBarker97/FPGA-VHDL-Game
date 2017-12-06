@@ -44,12 +44,6 @@ module draw_con(
     reg [3:0]food_b = 0;
     wire [7:0]address;
     wire [15:0]spritebit;
-    dist_mem_gen_0 sprites
-    (
-    .a(address),     
-   // Clock in ports
-    .spo(spritebit)
-    );
     always@*
             begin
             if ((draw_x<11) | (draw_x>1428) | (draw_y<11) | (draw_y>888))
@@ -107,10 +101,17 @@ module draw_con(
                 begin
                 if(cha_r==0 && cha_g==0 && cha_b==0)
                     begin
-                    
-                    r <= food_r;
-                    g <= food_g;
-                    b <= food_b;
+                    address <= 1;
+                        
+                    dist_mem_gen_0 sprites
+                    (
+                    .a(address),
+                    .spo(spritebit)
+                    );
+                        
+                    r <= spritebit[3:0];
+                    g <= spritebit[7:4];
+                    b <= spritebit[11:8];
                     end
                 else
                     begin
