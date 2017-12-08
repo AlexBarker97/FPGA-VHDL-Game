@@ -36,32 +36,25 @@ module vga_out(
   
   reg [10:0] hcount =0;
   reg [9:0] vcount =0;
-  
   reg [3:0] red;
   reg [3:0] green;
   reg [3:0] blue;
  
-  
-
-    
-  
-  
   always @(posedge clk)
-  
-  begin
-      if(hcount==1903)
+    begin
+    if(hcount==1903)
         begin
         hcount<=0;
         if(vcount==931)
-               begin
-                vcount<=0;
-                end
-            else
-                begin
-                vcount<=vcount+1;
-                end
+            begin
+            vcount<=0;
+            end
+        else
+            begin
+            vcount<=vcount+1;
+            end
         end
-      else
+    else
         begin
         hcount<=hcount+1;
         end
