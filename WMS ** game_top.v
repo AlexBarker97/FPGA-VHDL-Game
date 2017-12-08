@@ -25,7 +25,7 @@ module game_top(
     input left,
     input right,
     input centre,
-    input [1:0] sw,
+    input [2:0] sw,
     output [3:0]pix_r,
     output [3:0]pix_g,
     output [3:0]pix_b,
@@ -123,7 +123,7 @@ module game_top(
             slowclk = 0; //determining refresh rate of checking for inputs
             bouncerclk = 0; //bouncer movement direction
             
-            speed = 1; //initial diffiulty modifier
+            speed = 0; //initial diffiulty modifier
             end
         
         always@(posedge clk)
@@ -156,13 +156,27 @@ module game_top(
             
          always@(posedge slowclk)
              begin
-             if(sw[1] == 0)
+             if(sw[1] == 0  && sw[2] ==0)
                 begin
-                speed <= 1;
+                speed <= 0;
                 end
              else
                 begin
-                speed <= 2;
+                if(sw[1] == 1  && sw[2] ==0)  
+                    begin
+                    speed <= 1;
+                    end
+                else
+                    begin
+                    if(sw[1] == 0  && sw[2] ==1)
+                        begin
+                        speed <= 2;
+                        end
+                    else
+                        begin
+                        speed<=3; 
+                        end
+                    end
                 end
              if(centre && sw[0])
                 begin
@@ -264,45 +278,45 @@ module game_top(
                                 begin
                                 if((characterPos_x < seeker1Pos_x))
                                     begin
-                                    seeker1Pos_x <= seeker1Pos_x - (3 - speed);
+                                    seeker1Pos_x <= seeker1Pos_x - (1 + speed);
                                     end  
                                 if((characterPos_x > seeker1Pos_x))
                                     begin
-                                    seeker1Pos_x <= seeker1Pos_x + (3 - speed);
+                                    seeker1Pos_x <= seeker1Pos_x + (1 + speed);
                                     end 
                                 if(characterPos_y < seeker1Pos_y)
                                     begin
-                                    seeker1Pos_y <= seeker1Pos_y - (3 - speed);
+                                    seeker1Pos_y <= seeker1Pos_y - (1 + speed);
                                     end  
                                 if(characterPos_y > seeker1Pos_y)
                                     begin
-                                    seeker1Pos_y <= seeker1Pos_y + (3 - speed);
+                                    seeker1Pos_y <= seeker1Pos_y + (1 + speed);
                                     end
                                 end
                             if(score>5)
                                 begin    
                                 if(characterPos_x < seeker2Pos_x)
                                     begin
-                                    seeker2Pos_x <= seeker2Pos_x - (4 - speed);
+                                    seeker2Pos_x <= seeker2Pos_x - (2 + speed);
                                     end  
                                 if(characterPos_x > seeker2Pos_x)
                                     begin
-                                    seeker2Pos_x <= seeker2Pos_x + (4 - speed);
+                                    seeker2Pos_x <= seeker2Pos_x + (2 + speed);
                                     end 
                                 if(characterPos_y < seeker2Pos_y)
                                     begin
-                                    seeker2Pos_y <= seeker2Pos_y - (4 - speed);
+                                    seeker2Pos_y <= seeker2Pos_y - (2 + speed);
                                     end  
                                 if(characterPos_y > seeker2Pos_y)
                                     begin
-                                    seeker2Pos_y <= seeker2Pos_y + (4 - speed);
+                                    seeker2Pos_y <= seeker2Pos_y + (2 + speed);
                                     end
                                 end
                             if(score>3)
                                 begin
                                 if(linear1Pos_y < 890)
                                     begin
-                                    linear1Pos_y <= linear1Pos_y + (12 - (2 * speed));
+                                    linear1Pos_y <= linear1Pos_y + (8 + (2 * speed));
                                     end  
                                 else
                                     begin
@@ -310,7 +324,7 @@ module game_top(
                                     end
                                 if(linear2Pos_y > 10)
                                     begin
-                                    linear2Pos_y <= linear2Pos_y - (12 - (2 * speed));
+                                    linear2Pos_y <= linear2Pos_y - (8 + (2 * speed));
                                     end  
                                 else
                                     begin
@@ -321,7 +335,7 @@ module game_top(
                                 begin
                                 if(bouncerclk==0)
                                     begin
-                                    bouncer1Pos_x<=bouncer1Pos_x - (11 - (2 * speed));
+                                    bouncer1Pos_x<=bouncer1Pos_x - (8 + (2 * speed));
                                     if(bouncer1Pos_x<70)
                                         begin
                                         bouncerclk<=1;
@@ -329,7 +343,7 @@ module game_top(
                                     end
                                 else
                                     begin
-                                    bouncer1Pos_x<=bouncer1Pos_x + (11 - (2 * speed));
+                                    bouncer1Pos_x<=bouncer1Pos_x + (8 + (2 * speed));
                                     if(bouncer1Pos_x>1369)
                                         begin
                                         bouncerclk<=0;
